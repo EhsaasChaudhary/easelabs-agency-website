@@ -185,8 +185,10 @@
  * ---------------------------------------------------------------------------
  * The interactive background canvas sits fixed behind all content. Any element
  * using a translucent brand or surface tint would otherwise let the particles
- * show through. We paint an opaque card-colored layer behind those elements so
- * cards always block the canvas while preserving their original colored tint.
+ * show through AND would visually collapse into the page background. We paint
+ * an opaque backdrop behind those elements that is pre-tinted with the card's
+ * own brand color, so cards keep their original color identity AND fully block
+ * the canvas regardless of theme.
  * -------------------------------------------------------------------------- */
 @layer utilities {
   [class*="bg-brand-coral/"],
@@ -212,9 +214,30 @@
     content: "";
     position: absolute;
     inset: 0;
-    background-color: var(--background);
     border-radius: inherit;
     z-index: -1;
     pointer-events: none;
+  }
+
+  /* Brand-tinted cards: backdrop pre-mixed with the brand color so the card
+     reads as its intended hue rather than blending with the body background. */
+  [class*="bg-brand-coral/"]::before {
+    background-color: color-mix(in oklch, var(--brand-coral) 28%, var(--background));
+  }
+  [class*="bg-brand-cyan/"]::before {
+    background-color: color-mix(in oklch, var(--brand-cyan) 28%, var(--background));
+  }
+  [class*="bg-brand-yellow/"]::before {
+    background-color: color-mix(in oklch, var(--brand-yellow) 32%, var(--background));
+  }
+
+  /* Neutral surfaces: use the slightly-elevated card token so they sit just
+     above the page background. */
+  [class*="bg-foreground/"]::before,
+  [class*="bg-card/"]::before,
+  [class*="bg-secondary/"]::before,
+  [class*="bg-muted/"]::before,
+  [class*="bg-background/"]::before {
+    background-color: var(--card);
   }
 }
