@@ -4,6 +4,7 @@ import { Analytics } from "@vercel/analytics/next"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { ThemeProvider } from "@/components/theme-provider"
+import { BackgroundManager } from "@/components/background-manager"
 import "./globals.css"
 
 const inter = Inter({
@@ -47,9 +48,12 @@ export default function RootLayout({
     >
       <body className="font-sans antialiased text-foreground">
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
-          <SiteHeader />
-          <main className="min-h-[calc(100dvh-80px)]">{children}</main>
-          <SiteFooter />
+          <BackgroundManager />
+          <div className="relative z-10">
+            <SiteHeader />
+            <main className="min-h-[calc(100dvh-80px)]">{children}</main>
+            <SiteFooter />
+          </div>
           {process.env.NODE_ENV === "production" && <Analytics />}
         </ThemeProvider>
       </body>
