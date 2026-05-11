@@ -2,23 +2,28 @@
 
 import { useEffect, useRef } from "react"
 
-export type GlowShape = "circle" | "square" | "diamond" | "hexagon" | "ring"
-
-interface InteractiveBackgroundProps {
-  glowShape: GlowShape
-}
-
 interface Particle {
   x: number
   y: number
+  // Current velocity (may be perturbed by the cursor).
   vx: number
   vy: number
+  // Persistent slow drift — particles always float, even when idle.
+  baseVx: number
+  baseVy: number
   r: number
 }
 
 // Terracotta brand color, light + dark variants (mirrors --brand-coral tokens).
 const COLOR_LIGHT = "#b3623f"
 const COLOR_DARK = "#d18260"
+
+// Constellation links — lines appear only between particles closer than this.
+const LINK_DISTANCE = 100
+// Upper bound on link opacity (10% more than the previous 0.2 default).
+const MAX_LINK_ALPHA = 0.22
+// Cursor glow stays small and soft — does not attract or erase, only repels.
+const CURSOR_RADIUS = 90
 
 function hexToRgb(hex: string): string {
   const m = hex.replace("#", "")
@@ -28,7 +33,7 @@ function hexToRgb(hex: string): string {
   return `${r}, ${g}, ${b}`
 }
 
-export function InteractiveBackground({ glowShape }: InteractiveBackgroundProps) {
+export function InteractiveBackground() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
 
   useEffect(() => {
@@ -58,20 +63,24 @@ export function InteractiveBackground({ glowShape }: InteractiveBackgroundProps)
     const pointer = { x: -9999, y: -9999, active: false }
     let particles: Particle[] = []
 
-    // Cursor glow stays small and soft — does not attract or erase, only repels.
-    const CURSOR_RADIUS = 90
-    // Constellation link distance — lines only appear between nearby particles.
-    const LINK_DISTANCE = 130
-
     const initParticles = () => {
       const count = Math.min(80, Math.floor((width * height) / 22000))
-      particles = Array.from({ length: count }, () => ({
-        x: Math.random() * width,
-        y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.3,
-        vy: (Math.random() - 0.5) * 0.3,
-        r: 1.3 + Math.random() * 2.2,
-      }))
+      particles = Array.from({ length: count }, () => {
+        const angle = Math.random() * Math.PI * 2
+        // Slow, varied base speed so the field always feels alive.
+        const speed = 0.12 + Math.random() * 0.18
+        const baseVx = Math.cos(angle) * speed
+        const baseVy = Math.sin(angle) * speed
+        return {
+          x: Math.random() * width,
+          y: Math.random() * height,
+          vx: baseVx,
+          vy: baseVy,
+          baseVx,
+          baseVy,
+          r: 1.3 + Math.random() * 2.2,
+        }
+      })
     }
 
     const resize = () => {
@@ -102,89 +111,16 @@ export function InteractiveBackground({ glowShape }: InteractiveBackgroundProps)
     window.addEventListener("resize", resize)
     resize()
 
-    // ---- Cursor glow shape painters
+    // ---- Cursor glow (always a circle, gentle radial bloom)
     const drawGlow = (px: number, py: number, accentRgb: string) => {
       const r = CURSOR_RADIUS
-      // Light, soft glow — same color, just gentle bloom.
-      ctx.save()
-
-      switch (glowShape) {
-        case "circle": {
-          const g = ctx.createRadialGradient(px, py, 0, px, py, r)
-          g.addColorStop(0, `rgba(${accentRgb}, 0.18)`)
-          g.addColorStop(1, `rgba(${accentRgb}, 0)`)
-          ctx.fillStyle = g
-          ctx.beginPath()
-          ctx.arc(px, py, r, 0, Math.PI * 2)
-          ctx.fill()
-          break
-        }
-        case "square": {
-          // Rounded square clipped to the same radial falloff for a soft bloom.
-          const size = r * 1.6
-          ctx.translate(px, py)
-          const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, r)
-          grad.addColorStop(0, `rgba(${accentRgb}, 0.2)`)
-          grad.addColorStop(1, `rgba(${accentRgb}, 0)`)
-          ctx.fillStyle = grad
-          const radius = 14
-          ctx.beginPath()
-          ctx.moveTo(-size / 2 + radius, -size / 2)
-          ctx.arcTo(size / 2, -size / 2, size / 2, size / 2, radius)
-          ctx.arcTo(size / 2, size / 2, -size / 2, size / 2, radius)
-          ctx.arcTo(-size / 2, size / 2, -size / 2, -size / 2, radius)
-          ctx.arcTo(-size / 2, -size / 2, size / 2, -size / 2, radius)
-          ctx.closePath()
-          ctx.fill()
-          break
-        }
-        case "diamond": {
-          const size = r * 1.4
-          ctx.translate(px, py)
-          ctx.rotate(Math.PI / 4)
-          const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, r)
-          grad.addColorStop(0, `rgba(${accentRgb}, 0.2)`)
-          grad.addColorStop(1, `rgba(${accentRgb}, 0)`)
-          ctx.fillStyle = grad
-          ctx.fillRect(-size / 2, -size / 2, size, size)
-          break
-        }
-        case "hexagon": {
-          const size = r
-          ctx.translate(px, py)
-          const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, r)
-          grad.addColorStop(0, `rgba(${accentRgb}, 0.2)`)
-          grad.addColorStop(1, `rgba(${accentRgb}, 0)`)
-          ctx.fillStyle = grad
-          ctx.beginPath()
-          for (let i = 0; i < 6; i++) {
-            const a = (Math.PI / 3) * i - Math.PI / 6
-            const x = Math.cos(a) * size
-            const y = Math.sin(a) * size
-            if (i === 0) ctx.moveTo(x, y)
-            else ctx.lineTo(x, y)
-          }
-          ctx.closePath()
-          ctx.fill()
-          break
-        }
-        case "ring": {
-          // Hollow ring — soft outline glow rather than filled bloom.
-          const inner = r * 0.55
-          const outer = r
-          const grad = ctx.createRadialGradient(px, py, inner * 0.6, px, py, outer)
-          grad.addColorStop(0, `rgba(${accentRgb}, 0)`)
-          grad.addColorStop(0.55, `rgba(${accentRgb}, 0.28)`)
-          grad.addColorStop(1, `rgba(${accentRgb}, 0)`)
-          ctx.fillStyle = grad
-          ctx.beginPath()
-          ctx.arc(px, py, outer, 0, Math.PI * 2)
-          ctx.fill()
-          break
-        }
-      }
-
-      ctx.restore()
+      const g = ctx.createRadialGradient(px, py, 0, px, py, r)
+      g.addColorStop(0, `rgba(${accentRgb}, 0.18)`)
+      g.addColorStop(1, `rgba(${accentRgb}, 0)`)
+      ctx.fillStyle = g
+      ctx.beginPath()
+      ctx.arc(px, py, r, 0, Math.PI * 2)
+      ctx.fill()
     }
 
     // ---- Renderer
@@ -192,15 +128,15 @@ export function InteractiveBackground({ glowShape }: InteractiveBackgroundProps)
       ctx.clearRect(0, 0, width, height)
       const colorRgb = hexToRgb(isDark ? COLOR_DARK : COLOR_LIGHT)
 
-      // Update particles: gentle drift + cursor repulsion.
+      // Update particles: gentle persistent drift + cursor repulsion.
       for (const p of particles) {
+        // Cursor repulsion — does not attract or erase, only nudges outward.
         if (pointer.active) {
           const dx = p.x - pointer.x
           const dy = p.y - pointer.y
           const d2 = dx * dx + dy * dy
           if (d2 < CURSOR_RADIUS * CURSOR_RADIUS && d2 > 0.5) {
             const d = Math.sqrt(d2)
-            // Falloff: strongest at center, fades to 0 at edge.
             const t = 1 - d / CURSOR_RADIUS
             const force = t * 0.9
             p.vx += (dx / d) * force
@@ -208,16 +144,21 @@ export function InteractiveBackground({ glowShape }: InteractiveBackgroundProps)
           }
         }
 
-        p.x += p.vx
-        p.y += p.vy
+        // Ease current velocity back toward the particle's base drift,
+        // so it always floats slowly even with no cursor interaction.
+        p.vx += (p.baseVx - p.vx) * 0.03
+        p.vy += (p.baseVy - p.vy) * 0.03
 
-        // Mild friction + tiny random walk so motion stays alive.
-        p.vx *= 0.96
-        p.vy *= 0.96
-        p.vx += (Math.random() - 0.5) * 0.008
-        p.vy += (Math.random() - 0.5) * 0.008
+        // Slowly rotate the base drift vector — organic wandering motion.
+        const rot = (Math.random() - 0.5) * 0.04
+        const cos = Math.cos(rot)
+        const sin = Math.sin(rot)
+        const nbx = p.baseVx * cos - p.baseVy * sin
+        const nby = p.baseVx * sin + p.baseVy * cos
+        p.baseVx = nbx
+        p.baseVy = nby
 
-        // Clamp max drift speed so repelled particles ease back down.
+        // Clamp peak speed so cursor impulses can't fling particles too far.
         const speed = Math.hypot(p.vx, p.vy)
         const maxSpeed = 1.6
         if (speed > maxSpeed) {
@@ -225,14 +166,18 @@ export function InteractiveBackground({ glowShape }: InteractiveBackgroundProps)
           p.vy = (p.vy / speed) * maxSpeed
         }
 
-        // Wrap edges.
+        p.x += p.vx
+        p.y += p.vy
+
+        // Wrap edges so the field never empties.
         if (p.x < -10) p.x = width + 10
         if (p.x > width + 10) p.x = -10
         if (p.y < -10) p.y = height + 10
         if (p.y > height + 10) p.y = -10
       }
 
-      // Constellation links — only between particles within LINK_DISTANCE.
+      // Constellation links — appear only between particles inside LINK_DISTANCE.
+      // Closer pairs = more visible lines, capped at MAX_LINK_ALPHA.
       ctx.lineWidth = 0.6
       for (let i = 0; i < particles.length; i++) {
         const a = particles[i]
@@ -242,7 +187,8 @@ export function InteractiveBackground({ glowShape }: InteractiveBackgroundProps)
           const dy = a.y - b.y
           const d2 = dx * dx + dy * dy
           if (d2 < LINK_DISTANCE * LINK_DISTANCE) {
-            const alpha = (1 - Math.sqrt(d2) / LINK_DISTANCE) * 0.2
+            const t = 1 - Math.sqrt(d2) / LINK_DISTANCE
+            const alpha = t * MAX_LINK_ALPHA
             ctx.strokeStyle = `rgba(${colorRgb}, ${alpha})`
             ctx.beginPath()
             ctx.moveTo(a.x, a.y)
@@ -301,7 +247,7 @@ export function InteractiveBackground({ glowShape }: InteractiveBackgroundProps)
       document.removeEventListener("visibilitychange", onVisibility)
       themeObserver.disconnect()
     }
-  }, [glowShape])
+  }, [])
 
   return (
     <canvas

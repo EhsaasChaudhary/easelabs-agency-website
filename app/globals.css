@@ -179,3 +179,42 @@
     animation: none;
   }
 }
+
+/* ----------------------------------------------------------------------------
+ * Card surface guard
+ * ---------------------------------------------------------------------------
+ * The interactive background canvas sits fixed behind all content. Any element
+ * using a translucent brand or surface tint would otherwise let the particles
+ * show through. We paint an opaque card-colored layer behind those elements so
+ * cards always block the canvas while preserving their original colored tint.
+ * -------------------------------------------------------------------------- */
+@layer utilities {
+  [class*="bg-brand-coral/"],
+  [class*="bg-brand-cyan/"],
+  [class*="bg-brand-yellow/"],
+  [class*="bg-foreground/"],
+  [class*="bg-card/"],
+  [class*="bg-background/"],
+  [class*="bg-secondary/"],
+  [class*="bg-muted/"] {
+    position: relative;
+    isolation: isolate;
+  }
+
+  [class*="bg-brand-coral/"]::before,
+  [class*="bg-brand-cyan/"]::before,
+  [class*="bg-brand-yellow/"]::before,
+  [class*="bg-foreground/"]::before,
+  [class*="bg-card/"]::before,
+  [class*="bg-background/"]::before,
+  [class*="bg-secondary/"]::before,
+  [class*="bg-muted/"]::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: var(--background);
+    border-radius: inherit;
+    z-index: -1;
+    pointer-events: none;
+  }
+}

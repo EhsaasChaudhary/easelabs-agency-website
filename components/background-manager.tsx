@@ -1,19 +1,9 @@
 "use client"
 
-import { usePathname } from "next/navigation"
-import { InteractiveBackground, type GlowShape } from "@/components/interactive-background"
+import { InteractiveBackground } from "@/components/interactive-background"
 
-function glowShapeFor(pathname: string): GlowShape {
-  if (pathname.startsWith("/about")) return "square"
-  if (pathname.startsWith("/services")) return "diamond"
-  if (pathname.startsWith("/projects")) return "hexagon"
-  if (pathname.startsWith("/contact")) return "ring"
-  return "circle" // home + fallback
-}
-
+// One unified background across every page: drifting terracotta particles with
+// constellation links and a small circular cursor glow that gently repels them.
 export function BackgroundManager() {
-  const pathname = usePathname() ?? "/"
-  const glowShape = glowShapeFor(pathname)
-  // `key` forces a fresh canvas mount per route so particle state resets cleanly.
-  return <InteractiveBackground key={glowShape} glowShape={glowShape} />
+  return <InteractiveBackground />
 }
