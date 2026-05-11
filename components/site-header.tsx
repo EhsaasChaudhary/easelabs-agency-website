@@ -12,6 +12,7 @@ const navItems = [
   { href: "/about", label: "About" },
   { href: "/services", label: "Services" },
   { href: "/projects", label: "Projects" },
+  { href: "/referral", label: "Referral" },
   { href: "/contact", label: "Contact" },
 ]
 
@@ -59,10 +60,10 @@ export function SiteHeader() {
         <div className="hidden items-center gap-2 md:flex">
           <ThemeToggle />
           <Link
-            href="/contact"
+            href="/referral"
             className="inline-flex rounded-full bg-foreground px-5 py-2.5 text-sm text-background transition-colors hover:bg-brand-coral"
           >
-            Start a project
+            Join referral
           </Link>
         </div>
 
@@ -107,11 +108,11 @@ export function SiteHeader() {
               )
             })}
             <Link
-              href="/contact"
+              href="/referral"
               onClick={() => setOpen(false)}
               className="mt-2 rounded-full bg-foreground px-5 py-3 text-center text-sm text-background"
             >
-              Start a project
+              Join referral
             </Link>
           </div>
         </nav>
