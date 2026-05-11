@@ -3,7 +3,7 @@ import Link from "next/link"
 import { ArrowUpRight } from "lucide-react"
 
 export const metadata = {
-  title: "Projects — Looplab",
+  title: "Projects — EaseLabs",
   description:
     "A selection of recent work. Apps, sites, brands, and tools we've shipped with great teams.",
 }
@@ -175,7 +175,7 @@ export default function ProjectsPage() {
           </p>
           <blockquote className="mt-6 font-serif text-3xl leading-tight tracking-tight text-balance md:text-5xl">
             <span className="italic text-brand-coral">&ldquo;</span>
-            Looplab is the rare studio that ships software you actually want to
+            EaseLabs is the rare studio that ships software you actually want to
             keep. They left us with code our team is proud to maintain — and a
             product our users tell us they love.
             <span className="italic text-brand-coral">&rdquo;</span>

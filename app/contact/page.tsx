@@ -2,7 +2,7 @@ import { ContactForm } from "@/components/contact-form"
 import { Mail, MapPin, Clock } from "lucide-react"
 
 export const metadata = {
-  title: "Contact — Looplab",
+  title: "Contact — EaseLabs",
   description:
     "Tell us about your project, your team, or just say hi. We read every message.",
 }
@@ -11,19 +11,19 @@ const channels = [
   {
     icon: Mail,
     label: "Email",
-    value: "hello@looplab.studio",
-    href: "mailto:hello@looplab.studio",
+    value: "hello@easelabs.in",
+    href: "mailto:hello@easelabs.in",
   },
   {
     icon: MapPin,
     label: "Studio",
-    value: "Rua das Flores 24, Lisbon",
+    value: "Indiranagar, Bengaluru 560038",
     href: "#",
   },
   {
     icon: Clock,
     label: "Hours",
-    value: "Mon–Fri · 9:00–18:00 WET",
+    value: "Mon–Fri · 10:00–19:00 IST",
     href: "#",
   },
 ]
@@ -35,7 +35,7 @@ const faqs = [
   },
   {
     q: "What size projects do you take?",
-    a: "Engagements typically start at €18k for a sprint, €60k+ for full studio builds.",
+    a: "Engagements typically start at ₹15L for a sprint, ₹50L+ for full studio builds.",
   },
   {
     q: "Do you sign NDAs?",
@@ -80,10 +80,10 @@ export default function ContactPage() {
               <p className="mt-3 font-serif text-3xl leading-tight">
                 Drop us a line at{" "}
                 <a
-                  href="mailto:hello@looplab.studio"
+                  href="mailto:hello@easelabs.in"
                   className="italic underline-offset-4 hover:underline"
                 >
-                  hello@looplab.studio
+                  hello@easelabs.in
                 </a>
               </p>
               <p className="mt-4 text-sm opacity-90">

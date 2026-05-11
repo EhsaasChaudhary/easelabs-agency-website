@@ -4,7 +4,7 @@ import { ArrowUpRight } from "lucide-react"
 import { Marquee } from "@/components/marquee"
 
 export const metadata = {
-  title: "About — Looplab",
+  title: "About — EaseLabs",
   description:
     "We are a small, opinionated studio building thoughtful software for teams that care about craft.",
 }
@@ -42,7 +42,7 @@ const team = [
 ]
 
 const timeline = [
-  { year: "2018", event: "Looplab founded above a bakery in Lisbon." },
+  { year: "2018", event: "EaseLabs founded in a co-working loft in Bengaluru." },
   { year: "2020", event: "First product launch reaches 1M users." },
   { year: "2022", event: "Team grows to nine. We say no to becoming an agency." },
   { year: "2024", event: "Open-sourced our internal design system." },
@@ -63,7 +63,7 @@ export default function AboutPage() {
         </h1>
         <div className="mt-12 grid gap-10 lg:grid-cols-12">
           <p className="text-pretty text-lg leading-relaxed text-muted-foreground lg:col-span-7">
-            We&apos;re Looplab — nine designers, engineers, and writers who left bigger
+            We&apos;re EaseLabs — nine designers, engineers, and writers who left bigger
             places to build smaller, sharper things. We partner with founders and
             in-house teams who treat their product as a craft, not a checklist.
           </p>
@@ -79,7 +79,7 @@ export default function AboutPage() {
               </div>
               <div>
                 <dt className="font-mono text-xs uppercase tracking-widest text-muted-foreground">Based in</dt>
-                <dd className="mt-2 font-serif text-3xl">Lisbon</dd>
+                <dd className="mt-2 font-serif text-3xl">Bengaluru</dd>
               </div>
               <div>
                 <dt className="font-mono text-xs uppercase tracking-widest text-muted-foreground">Time zones</dt>
@@ -95,7 +95,7 @@ export default function AboutPage() {
         <div className="relative aspect-[16/9] overflow-hidden rounded-3xl bg-secondary">
           <Image
             src="/about/studio.jpg"
-            alt="The Looplab studio — a bright workspace with cream walls, a wooden desk, and colorful accents."
+            alt="The EaseLabs studio — a bright workspace with cream walls, a wooden desk, and warm accents."
             fill
             sizes="(min-width: 1280px) 1200px, 100vw"
             className="object-cover"
@@ -186,7 +186,7 @@ export default function AboutPage() {
           [ A short history ]
         </p>
         <h2 className="mt-3 font-serif text-5xl leading-tight tracking-tight md:text-6xl">
-          From a bakery loft <span className="italic text-brand-coral">to here</span>.
+          From a co-working loft <span className="italic text-brand-coral">to here</span>.
         </h2>
 
         <ol className="mt-12 divide-y divide-border border-y border-border">

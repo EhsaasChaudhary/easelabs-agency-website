@@ -43,7 +43,7 @@ export default function HomePage() {
               Available · Q3 2026
             </span>
             <span className="hidden font-mono text-[11px] uppercase tracking-widest text-muted-foreground sm:inline">
-              Studio of 9 — Lisbon &amp; Remote
+              Studio of 9 — Bengaluru &amp; Remote
             </span>
           </div>
 
@@ -55,7 +55,7 @@ export default function HomePage() {
 
           <div className="mt-10 grid gap-10 lg:grid-cols-12 lg:items-end">
             <p className="max-w-xl text-pretty text-lg leading-relaxed text-muted-foreground lg:col-span-6">
-              Looplab is an independent creative studio. We design and build digital
+              EaseLabs is an independent creative studio. We design and build digital
               products, websites, and tools for ambitious teams who want their
               software to feel as good as it works.
             </p>

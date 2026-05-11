@@ -67,7 +67,7 @@ export function ContactForm() {
       </div>
 
       <div className="grid gap-6 sm:grid-cols-2">
-        <Field id="company" label="Company" placeholder="Looplab" />
+        <Field id="company" label="Company" placeholder="EaseLabs" />
         <Field id="role" label="Role" placeholder="Founder, PM, Designer..." />
       </div>
 
