@@ -191,26 +191,26 @@
  * the canvas regardless of theme.
  * -------------------------------------------------------------------------- */
 @layer utilities {
-  [class*="bg-brand-coral/"],
-  [class*="bg-brand-cyan/"],
-  [class*="bg-brand-yellow/"],
-  [class*="bg-foreground/"],
-  [class*="bg-card/"],
-  [class*="bg-background/"],
-  [class*="bg-secondary/"],
-  [class*="bg-muted/"] {
+  /* Scoped to <main> only so the sticky header (and any other intentionally
+     translucent UI outside content) keeps its backdrop-blur look. */
+  main [class*="bg-brand-coral/"],
+  main [class*="bg-brand-cyan/"],
+  main [class*="bg-brand-yellow/"],
+  main [class*="bg-foreground/"],
+  main [class*="bg-card/"],
+  main [class*="bg-secondary/"],
+  main [class*="bg-muted/"] {
     position: relative;
     isolation: isolate;
   }
 
-  [class*="bg-brand-coral/"]::before,
-  [class*="bg-brand-cyan/"]::before,
-  [class*="bg-brand-yellow/"]::before,
-  [class*="bg-foreground/"]::before,
-  [class*="bg-card/"]::before,
-  [class*="bg-background/"]::before,
-  [class*="bg-secondary/"]::before,
-  [class*="bg-muted/"]::before {
+  main [class*="bg-brand-coral/"]::before,
+  main [class*="bg-brand-cyan/"]::before,
+  main [class*="bg-brand-yellow/"]::before,
+  main [class*="bg-foreground/"]::before,
+  main [class*="bg-card/"]::before,
+  main [class*="bg-secondary/"]::before,
+  main [class*="bg-muted/"]::before {
     content: "";
     position: absolute;
     inset: 0;
@@ -221,23 +221,22 @@
 
   /* Brand-tinted cards: backdrop pre-mixed with the brand color so the card
      reads as its intended hue rather than blending with the body background. */
-  [class*="bg-brand-coral/"]::before {
+  main [class*="bg-brand-coral/"]::before {
     background-color: color-mix(in oklch, var(--brand-coral) 28%, var(--background));
   }
-  [class*="bg-brand-cyan/"]::before {
+  main [class*="bg-brand-cyan/"]::before {
     background-color: color-mix(in oklch, var(--brand-cyan) 28%, var(--background));
   }
-  [class*="bg-brand-yellow/"]::before {
+  main [class*="bg-brand-yellow/"]::before {
     background-color: color-mix(in oklch, var(--brand-yellow) 32%, var(--background));
   }
 
   /* Neutral surfaces: use the slightly-elevated card token so they sit just
      above the page background. */
-  [class*="bg-foreground/"]::before,
-  [class*="bg-card/"]::before,
-  [class*="bg-secondary/"]::before,
-  [class*="bg-muted/"]::before,
-  [class*="bg-background/"]::before {
+  main [class*="bg-foreground/"]::before,
+  main [class*="bg-card/"]::before,
+  main [class*="bg-secondary/"]::before,
+  main [class*="bg-muted/"]::before {
     background-color: var(--card);
   }
 }
