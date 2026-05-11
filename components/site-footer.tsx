@@ -12,7 +12,7 @@ export function SiteFooter() {
               [ Let&apos;s build ]
             </p>
             <h2 className="mt-4 font-serif text-5xl leading-[0.95] tracking-tight md:text-6xl">
-              Have an idea worth <span className="italic text-brand-coral">looping</span> us in on?
+              Have an idea worth <span className="italic text-brand-coral">easing</span> into reality?
             </h2>
             <Link
               href="/contact"
@@ -51,8 +51,8 @@ export function SiteFooter() {
                 Reach us
               </p>
               <ul className="mt-4 space-y-2 text-sm">
-                <li><a href="mailto:hello@looplab.studio" className="hover:text-brand-coral">hello@looplab.studio</a></li>
-                <li className="text-muted-foreground">Lisbon · Remote</li>
+                <li><a href="mailto:hello@easelabs.in" className="hover:text-brand-coral">hello@easelabs.in</a></li>
+                <li className="text-muted-foreground">Bengaluru · Remote</li>
               </ul>
             </div>
           </div>
@@ -62,13 +62,13 @@ export function SiteFooter() {
           aria-hidden
           className="mt-16 select-none overflow-hidden text-[18vw] leading-none font-serif tracking-tighter text-foreground/90"
         >
-          looplab<span className="italic text-brand-coral">.</span>
+          easelabs<span className="italic text-brand-coral">.</span>
         </div>
 
         <div className="mt-10 flex flex-col gap-2 border-t border-border/60 pt-6 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
-          <p>© {new Date().getFullYear()} Looplab Studio. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} EaseLabs Studio. All rights reserved.</p>
           <p className="font-mono uppercase tracking-widest">
-            Crafted with care · v1.0
+            easelabs.in · v1.0
           </p>
         </div>
       </div>

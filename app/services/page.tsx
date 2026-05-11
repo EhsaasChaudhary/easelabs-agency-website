@@ -2,7 +2,7 @@ import Link from "next/link"
 import { ArrowUpRight, Compass, Code2, Palette, Bot, Boxes, Rocket } from "lucide-react"
 
 export const metadata = {
-  title: "Services — Looplab",
+  title: "Services — EaseLabs",
   description:
     "Strategy, design, engineering, and brand. The full creative-software loop, end to end.",
 }
@@ -126,7 +126,7 @@ const process = [
 const engagements = [
   {
     title: "Sprint",
-    price: "From €18k",
+    price: "From ₹15L",
     duration: "2 weeks",
     desc: "Concept, prototype, or audit. A focused dive on a single, gnarly question.",
     includes: ["Discovery workshop", "Clickable prototype", "Strategy doc"],
@@ -134,7 +134,7 @@ const engagements = [
   },
   {
     title: "Studio",
-    price: "From €60k",
+    price: "From ₹50L",
     duration: "8–12 weeks",
     desc: "Our most popular engagement. End-to-end design and build of a real product.",
     includes: ["Strategy + design + build", "Weekly demos", "Production handover"],

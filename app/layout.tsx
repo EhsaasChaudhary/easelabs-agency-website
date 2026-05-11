@@ -3,6 +3,7 @@ import { Inter, Instrument_Serif, JetBrains_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
+import { ThemeProvider } from "@/components/theme-provider"
 import "./globals.css"
 
 const inter = Inter({
@@ -26,9 +27,10 @@ const jetbrainsMono = JetBrains_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "Looplab — Creative Software Development Studio",
+  metadataBase: new URL("https://easelabs.in"),
+  title: "EaseLabs — Creative Software Development Studio",
   description:
-    "Looplab is an independent studio crafting thoughtful digital products, websites, and software for ambitious teams.",
+    "EaseLabs is an independent studio crafting thoughtful digital products, websites, and software for ambitious teams.",
   generator: "v0.app",
 }
 
@@ -40,13 +42,16 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${inter.variable} ${instrumentSerif.variable} ${jetbrainsMono.variable} bg-background`}
     >
       <body className="font-sans antialiased text-foreground">
-        <SiteHeader />
-        <main className="min-h-[calc(100dvh-80px)]">{children}</main>
-        <SiteFooter />
-        {process.env.NODE_ENV === "production" && <Analytics />}
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
+          <SiteHeader />
+          <main className="min-h-[calc(100dvh-80px)]">{children}</main>
+          <SiteFooter />
+          {process.env.NODE_ENV === "production" && <Analytics />}
+        </ThemeProvider>
       </body>
     </html>
   )

@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation"
 import { useState } from "react"
 import { Menu, X } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 const navItems = [
   { href: "/", label: "Home" },
@@ -26,7 +27,7 @@ export function SiteHeader() {
             aria-hidden
             className="inline-block h-3 w-3 rounded-full bg-brand-coral transition-transform group-hover:scale-125"
           />
-          <span className="font-serif text-2xl tracking-tight">Looplab</span>
+          <span className="font-serif text-2xl tracking-tight">EaseLabs</span>
           <span className="font-serif text-2xl italic text-brand-coral">.</span>
         </Link>
 
@@ -55,23 +56,29 @@ export function SiteHeader() {
           })}
         </nav>
 
-        <Link
-          href="/contact"
-          className="hidden rounded-full bg-foreground px-5 py-2.5 text-sm text-background transition-colors hover:bg-brand-coral md:inline-flex"
-        >
-          Start a project
-        </Link>
+        <div className="hidden items-center gap-2 md:flex">
+          <ThemeToggle />
+          <Link
+            href="/contact"
+            className="inline-flex rounded-full bg-foreground px-5 py-2.5 text-sm text-background transition-colors hover:bg-brand-coral"
+          >
+            Start a project
+          </Link>
+        </div>
 
-        {/* Mobile toggle */}
-        <button
-          type="button"
-          aria-label={open ? "Close menu" : "Open menu"}
-          aria-expanded={open}
-          onClick={() => setOpen((v) => !v)}
-          className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border md:hidden"
-        >
-          {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
+        {/* Mobile actions */}
+        <div className="flex items-center gap-2 md:hidden">
+          <ThemeToggle />
+          <button
+            type="button"
+            aria-label={open ? "Close menu" : "Open menu"}
+            aria-expanded={open}
+            onClick={() => setOpen((v) => !v)}
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border"
+          >
+            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile nav */}
