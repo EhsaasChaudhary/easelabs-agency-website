@@ -26,7 +26,7 @@ export function SiteHeader() {
             aria-hidden
             className="inline-block h-3 w-3 rounded-full bg-brand-coral transition-transform group-hover:scale-125"
           />
-          <span className="font-serif text-2xl tracking-tight">Looplab</span>
+          <span className="font-serif text-2xl tracking-tight">Easelabs</span>
           <span className="font-serif text-2xl italic text-brand-coral">.</span>
         </Link>
 
