@@ -1,5 +1,6 @@
 import { ReferralForm } from "@/components/referral-form"
 import { ArrowUpRight, Share2, Handshake, Gift, Users, Sparkles, Wallet } from "lucide-react"
+import { Reveal } from "@/components/reveal"
 
 export const metadata = {
   title: "Referral Program — EaseLabs",
@@ -84,50 +85,71 @@ export default function ReferralPage() {
     <>
       {/* HERO */}
       <section className="mx-auto max-w-7xl px-6 pt-16 pb-16 lg:px-10 lg:pt-24">
-        <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
+        <Reveal as="p" variant="up" className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
           [ Referral program ]
-        </p>
-        <h1 className="mt-6 font-serif text-6xl leading-[0.95] tracking-tight md:text-8xl lg:text-9xl">
+        </Reveal>
+        <Reveal
+          as="h1"
+          variant="up"
+          delay={120}
+          className="mt-6 font-serif text-6xl leading-[0.95] tracking-tight md:text-8xl lg:text-9xl"
+        >
           Share the <span className="italic text-brand-coral">good</span> work.
-        </h1>
-        <p className="mt-8 max-w-2xl text-pretty text-lg leading-relaxed text-muted-foreground">
+        </Reveal>
+        <Reveal
+          as="p"
+          variant="up"
+          delay={240}
+          className="mt-8 max-w-2xl text-pretty text-lg leading-relaxed text-muted-foreground"
+        >
           Most of our best projects start with a warm intro. If you know a team
           building something thoughtful, send them our way — and we will share the
           reward when it turns into real work.
-        </p>
+        </Reveal>
       </section>
 
       {/* WHAT IT IS */}
       <section className="mx-auto max-w-7xl px-6 pb-24 lg:px-10">
         <div className="grid gap-10 lg:grid-cols-12 lg:items-end">
-          <div className="lg:col-span-5">
+          <Reveal variant="up" className="lg:col-span-5">
             <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
               [ What it is ]
             </p>
             <h2 className="mt-3 font-serif text-5xl leading-tight tracking-tight md:text-6xl">
               A simple <span className="italic text-brand-coral">thank-you</span>.
             </h2>
-          </div>
-          <p className="max-w-xl text-pretty text-base leading-relaxed text-muted-foreground lg:col-span-7">
+          </Reveal>
+          <Reveal
+            as="p"
+            variant="up"
+            delay={140}
+            className="max-w-xl text-pretty text-base leading-relaxed text-muted-foreground lg:col-span-7"
+          >
             Our referral program is the way we say thank you to the people who
             keep our studio busy with the right kind of work. There are no
             tiers, no portals, no chasing — just a clear introduction, a fair
             fee, and a long-term relationship.
-          </p>
+          </Reveal>
         </div>
 
         {/* STEPS */}
         <ol className="mt-16 grid gap-6 md:grid-cols-3">
-          {steps.map(({ icon: Icon, ...s }) => (
-            <li
+          {steps.map(({ icon: Icon, ...s }, i) => (
+            <Reveal
+              as="li"
               key={s.n}
-              className="relative flex flex-col gap-5 overflow-hidden rounded-3xl border border-border bg-card p-8"
+              variant="up"
+              delay={i * 120}
+              className="group relative flex flex-col gap-5 overflow-hidden rounded-3xl border border-border bg-card p-8 hover-lift"
             >
               <div className="flex items-start justify-between">
                 <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
                   {s.n}
                 </span>
-                <Icon className="h-6 w-6 text-brand-coral" aria-hidden="true" />
+                <Icon
+                  className="h-6 w-6 text-brand-coral transition-transform duration-500 group-hover:rotate-12"
+                  aria-hidden="true"
+                />
               </div>
               <h3 className="font-serif text-3xl leading-tight tracking-tight">
                 {s.title}
@@ -135,41 +157,49 @@ export default function ReferralPage() {
               <p className="text-sm leading-relaxed text-muted-foreground">
                 {s.body}
               </p>
-            </li>
+            </Reveal>
           ))}
         </ol>
       </section>
 
       {/* REWARDS */}
       <section className="mx-auto max-w-7xl px-6 pb-24 lg:px-10">
-        <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
-          [ The reward ]
-        </p>
-        <h2 className="mt-3 font-serif text-5xl leading-tight tracking-tight md:text-6xl">
-          Three ways to <span className="italic">say thanks</span>.
-        </h2>
+        <Reveal variant="up">
+          <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
+            [ The reward ]
+          </p>
+          <h2 className="mt-3 font-serif text-5xl leading-tight tracking-tight md:text-6xl">
+            Three ways to <span className="italic">say thanks</span>.
+          </h2>
+        </Reveal>
 
         <div className="mt-12 grid gap-6 md:grid-cols-3">
-          {rewards.map(({ icon: Icon, ...r }) => (
-            <article
+          {rewards.map(({ icon: Icon, ...r }, i) => (
+            <Reveal
+              as="article"
               key={r.title}
-              className={`relative flex flex-col gap-6 overflow-hidden rounded-3xl ${r.color} ${r.fg} p-8`}
+              variant="up"
+              delay={i * 120}
+              className={`group relative flex flex-col gap-6 overflow-hidden rounded-3xl ${r.color} ${r.fg} p-8 hover-lift`}
             >
-              <Icon className="h-6 w-6" aria-hidden="true" />
+              <Icon
+                className="h-6 w-6 transition-transform duration-500 group-hover:rotate-12"
+                aria-hidden="true"
+              />
               <h3 className="font-serif text-3xl leading-tight tracking-tight">
                 {r.title}
               </h3>
               <p className="text-sm leading-relaxed opacity-90">{r.body}</p>
-            </article>
+            </Reveal>
           ))}
         </div>
       </section>
 
       {/* FORM */}
-      <section className="mx-auto max-w-7xl px-6 pb-24 lg:px-10">
+      <section className="mx-auto max-w-7xl px-6 pb-24 lg:px-10" id="join">
         <div className="grid gap-10 lg:grid-cols-12">
           {/* Form */}
-          <div className="lg:col-span-7">
+          <Reveal variant="left" className="lg:col-span-7">
             <div className="rounded-3xl border border-border bg-card p-6 sm:p-10">
               <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
                 [ Join the program ]
@@ -185,11 +215,15 @@ export default function ReferralPage() {
                 <ReferralForm />
               </div>
             </div>
-          </div>
+          </Reveal>
 
           {/* Side info */}
-          <aside className="space-y-6 lg:col-span-5">
-            <div className="rounded-3xl bg-brand-coral p-8 text-background">
+          <Reveal as="aside" variant="right" delay={120} className="space-y-6 lg:col-span-5">
+            <Reveal
+              variant="up"
+              delay={200}
+              className="rounded-3xl bg-brand-coral p-8 text-background hover-lift"
+            >
               <p className="font-mono text-xs uppercase tracking-widest opacity-80">
                 [ Standard fee ]
               </p>
@@ -200,9 +234,13 @@ export default function ReferralPage() {
                 Of the first engagement, paid within 14 days of kickoff. Renewals
                 earn additional bonus payouts.
               </p>
-            </div>
+            </Reveal>
 
-            <div className="rounded-3xl border border-border bg-card p-8">
+            <Reveal
+              variant="up"
+              delay={280}
+              className="rounded-3xl border border-border bg-card p-8 hover-lift"
+            >
               <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
                 [ Already have a lead? ]
               </p>
@@ -210,7 +248,7 @@ export default function ReferralPage() {
                 Send the intro to{" "}
                 <a
                   href="mailto:referrals@easelabs.in"
-                  className="italic underline-offset-4 hover:underline hover:text-brand-coral"
+                  className="italic hover-underline hover-coral"
                 >
                   referrals@easelabs.in
                 </a>
@@ -219,9 +257,13 @@ export default function ReferralPage() {
                 Cc your contact. We will reply to both of you within one
                 working day.
               </p>
-            </div>
+            </Reveal>
 
-            <div className="rounded-3xl bg-brand-yellow/40 p-8">
+            <Reveal
+              variant="up"
+              delay={360}
+              className="rounded-3xl bg-brand-yellow/40 p-8 hover-lift"
+            >
               <p className="font-mono text-xs uppercase tracking-widest text-foreground/70">
                 [ The fine print ]
               </p>
@@ -239,15 +281,15 @@ export default function ReferralPage() {
                   We always disclose the relationship to the referred team.
                 </li>
               </ul>
-            </div>
-          </aside>
+            </Reveal>
+          </Reveal>
         </div>
       </section>
 
       {/* FAQ */}
       <section className="mx-auto max-w-7xl px-6 pb-24 lg:px-10">
         <div className="grid gap-10 lg:grid-cols-12">
-          <div className="lg:col-span-4">
+          <Reveal variant="up" className="lg:col-span-4">
             <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
               [ Common questions ]
             </p>
@@ -258,23 +300,28 @@ export default function ReferralPage() {
               Cannot find what you are after? Write to{" "}
               <a
                 href="mailto:referrals@easelabs.in"
-                className="underline underline-offset-4 hover:text-brand-coral"
+                className="underline underline-offset-4 hover-coral"
               >
                 referrals@easelabs.in
               </a>{" "}
               and we will get back to you.
             </p>
-          </div>
+          </Reveal>
           <dl className="divide-y divide-border border-y border-border lg:col-span-8">
-            {faqs.map((f) => (
-              <div key={f.q} className="grid grid-cols-12 gap-4 py-6">
+            {faqs.map((f, i) => (
+              <Reveal
+                key={f.q}
+                variant="up"
+                delay={i * 80}
+                className="grid grid-cols-12 gap-4 py-6 transition-colors hover:bg-secondary/40"
+              >
                 <dt className="col-span-12 font-serif text-2xl leading-tight tracking-tight md:col-span-5">
                   {f.q}
                 </dt>
                 <dd className="col-span-12 text-muted-foreground md:col-span-7">
                   {f.a}
                 </dd>
-              </div>
+              </Reveal>
             ))}
           </dl>
         </div>
@@ -282,7 +329,10 @@ export default function ReferralPage() {
 
       {/* CTA */}
       <section className="mx-auto max-w-7xl px-6 pb-24 lg:px-10">
-        <div className="overflow-hidden rounded-3xl bg-foreground p-10 text-background sm:p-16">
+        <Reveal
+          variant="scale"
+          className="overflow-hidden rounded-3xl bg-foreground p-10 text-background sm:p-16"
+        >
           <p className="font-mono text-xs uppercase tracking-widest opacity-70">
             [ Ready to share ]
           </p>
@@ -292,12 +342,12 @@ export default function ReferralPage() {
           </h2>
           <a
             href="#join"
-            className="mt-10 inline-flex items-center gap-2 rounded-full bg-brand-coral px-6 py-3 text-sm transition-opacity hover:opacity-90"
+            className="group mt-10 inline-flex items-center gap-2 rounded-full bg-brand-coral px-6 py-3 text-sm transition-all hover:-translate-y-0.5 hover:opacity-90"
           >
             Join the referral program
-            <ArrowUpRight className="h-4 w-4" />
+            <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
           </a>
-        </div>
+        </Reveal>
       </section>
     </>
   )
