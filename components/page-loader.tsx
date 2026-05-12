@@ -255,16 +255,13 @@ export function PageLoader() {
           p.y =
             p.startY + Math.sin(p.angle) * r + Math.sin(p.angle + Math.PI / 2) * sway
 
-          // Alpha: hold for the first ~45% of life, then taper to zero by
-          // the end of the particle's life. The per-particle life multiplier
-          // staggers the fade so some particles linger naturally.
-          const lifeK = Math.min(local / (DURATION * p.life), 1)
-          let alpha: number
-          if (lifeK < 0.45) {
-            alpha = 0.85
-          } else {
-            alpha = 0.85 * (1 - (lifeK - 0.45) / 0.55)
-          }
+          // Alpha: fade out quickly so particles vanish almost as soon as
+          // they begin drifting. They peek for a brief moment then dissolve,
+          // leaving the live background field clean.
+          // Per-particle life multiplier still staggers the fade slightly.
+          const FADE_WINDOW = 0.35 // particles fade over the first 35% of DURATION
+          const lifeK = Math.min(local / (DURATION * FADE_WINDOW * p.life), 1)
+          const alpha = 0.85 * (1 - lifeK)
           if (alpha <= 0) continue
 
           ctx.globalAlpha = alpha
