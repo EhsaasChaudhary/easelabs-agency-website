@@ -180,6 +180,12 @@
   }
 }
 
+/* When the inline head script detects an already-seen session, this class
+   instantly removes the SSR-rendered loader before paint to avoid a flash. */
+html.loader-skip [data-page-loader] {
+  display: none !important;
+}
+
 /* ----------------------------------------------------------------------------
  * Card surface guard
  * ---------------------------------------------------------------------------

@@ -47,6 +47,15 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${inter.variable} ${instrumentSerif.variable} ${jetbrainsMono.variable} bg-background`}
     >
+      <head>
+        {/* Blocking script: on already-seen sessions, hide the loader markup
+            instantly to prevent a flash before React hydrates. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{var p=new URLSearchParams(location.search).get('loader');if(p!=='show'&&p!=='1'&&sessionStorage.getItem('easelabs_loader_seen')==='1'){document.documentElement.classList.add('loader-skip');}}catch(e){}`,
+          }}
+        />
+      </head>
       <body className="font-sans antialiased text-foreground">
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <BackgroundManager />
