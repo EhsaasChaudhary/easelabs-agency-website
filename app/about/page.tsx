@@ -42,11 +42,24 @@ const team = [
 ]
 
 const timeline = [
-  { year: "2018", event: "EaseLabs founded in a co-working loft in Bengaluru." },
-  { year: "2020", event: "First product launch reaches 1M users." },
-  { year: "2022", event: "Team grows to nine. We say no to becoming an agency." },
-  { year: "2024", event: "Open-sourced our internal design system." },
-  { year: "2026", event: "Now: building tools for the next decade of software." },
+  {
+    year: "2023",
+    chapter: "01",
+    title: "A loft, a laptop, an idea.",
+    body: "EaseLabs starts in a co-working loft in Bengaluru — three friends, one rule: only take on work we'd be proud to ship.",
+  },
+  {
+    year: "2024",
+    chapter: "02",
+    title: "First products in the wild.",
+    body: "We ship our first batch of partner products — a fintech app, a CMS, an AI tool — and grow the team to nine across design and engineering.",
+  },
+  {
+    year: "2026",
+    chapter: "03",
+    title: "Building for the long run.",
+    body: "Now: open-sourcing internal tools, picking partners over projects, and writing software the way we'd want it written a decade from now.",
+  },
 ]
 
 export default function AboutPage() {
@@ -71,7 +84,7 @@ export default function AboutPage() {
             <dl className="grid grid-cols-2 gap-6 border-l border-border pl-6">
               <div>
                 <dt className="font-mono text-xs uppercase tracking-widest text-muted-foreground">Founded</dt>
-                <dd className="mt-2 font-serif text-3xl">2018</dd>
+                <dd className="mt-2 font-serif text-3xl">2023</dd>
               </div>
               <div>
                 <dt className="font-mono text-xs uppercase tracking-widest text-muted-foreground">People</dt>
@@ -182,28 +195,52 @@ export default function AboutPage() {
 
       {/* TIMELINE */}
       <section className="mx-auto max-w-7xl px-6 pb-24 lg:px-10">
-        <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
-          [ A short history ]
-        </p>
-        <h2 className="mt-3 font-serif text-5xl leading-tight tracking-tight md:text-6xl">
-          From a co-working loft <span className="italic text-brand-coral">to here</span>.
-        </h2>
+        <div className="grid gap-10 lg:grid-cols-12">
+          <div className="lg:col-span-5">
+            <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
+              [ A short history ]
+            </p>
+            <h2 className="mt-3 font-serif text-5xl leading-tight tracking-tight md:text-6xl">
+              From a co-working loft <span className="italic text-brand-coral">to here</span>.
+            </h2>
+            <p className="mt-6 max-w-md text-pretty leading-relaxed text-muted-foreground">
+              Three years, three chapters. We&apos;ve grown slowly and on purpose —
+              one good partner, one shipped product, one small bet at a time.
+            </p>
+          </div>
 
-        <ol className="mt-12 divide-y divide-border border-y border-border">
-          {timeline.map((t) => (
-            <li
-              key={t.year}
-              className="grid grid-cols-12 items-baseline gap-4 py-6 transition-colors hover:bg-secondary/40"
-            >
-              <span className="col-span-3 font-mono text-sm tracking-widest text-brand-coral md:col-span-2">
-                {t.year}
-              </span>
-              <span className="col-span-9 font-serif text-2xl leading-tight tracking-tight md:col-span-10 md:text-3xl">
-                {t.event}
-              </span>
-            </li>
-          ))}
-        </ol>
+          <ol className="lg:col-span-7">
+            {timeline.map((t, i) => (
+              <li
+                key={t.year}
+                className="group relative flex flex-col gap-4 border-t border-border py-10 first:border-t-0 first:pt-0 md:flex-row md:items-start md:gap-10"
+              >
+                <div className="flex shrink-0 items-baseline gap-3 md:w-40 md:flex-col md:items-start md:gap-1">
+                  <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
+                    Chapter {t.chapter}
+                  </span>
+                  <span className="font-serif text-5xl leading-none tracking-tight text-brand-coral md:text-6xl">
+                    {t.year}
+                  </span>
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-serif text-3xl leading-tight tracking-tight md:text-4xl">
+                    {t.title}
+                  </h3>
+                  <p className="mt-3 max-w-xl leading-relaxed text-muted-foreground">
+                    {t.body}
+                  </p>
+                  {i < timeline.length - 1 ? null : (
+                    <span className="mt-4 inline-flex items-center gap-2 rounded-full bg-brand-yellow/40 px-3 py-1 font-mono text-xs uppercase tracking-widest">
+                      <span className="h-1.5 w-1.5 rounded-full bg-foreground" />
+                      Where we are now
+                    </span>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
 
         <div className="mt-16 flex flex-wrap items-center gap-3">
           <Link
