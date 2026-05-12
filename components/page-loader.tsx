@@ -65,8 +65,8 @@ export function PageLoader() {
 
     // Phase 1: wipe reveal (1100ms) + hold (600ms)
     const WORDMARK_DURATION = reducedMotion ? 500 : 1700
-    // Phase 2: disperse particles + overlay fade (1500ms)
-    const DISPERSE_DURATION = reducedMotion ? 0 : 1500
+    // Phase 2: slow floating-leaves dispersal + overlay fade
+    const DISPERSE_DURATION = reducedMotion ? 0 : 2800
 
     const enterDisperse = window.setTimeout(() => {
       if (reducedMotion) {
@@ -160,7 +160,7 @@ export function PageLoader() {
       // Bounded dispersal — particles spread within a soft radius around the
       // wordmark, not across the entire viewport. The radius is sized to the
       // wordmark itself so the effect feels anchored to the letters.
-      const MAX_RADIUS = Math.max(targetW, targetH) * 0.55
+      const MAX_RADIUS = Math.max(targetW, targetH) * 0.28
 
       type P = {
         x: number
@@ -179,7 +179,14 @@ export function PageLoader() {
         life: number
       }
 
-      const particles: P[] = pts.map((p) => {
+      type Particle = P & {
+        // Per-particle sway parameters — give each leaf a unique slow drift
+        // so the field doesn't move in lockstep.
+        swayAmp: number
+        swayFreq: number
+        swayPhase: number
+      }
+      const particles: Particle[] = pts.map((p) => {
         const x = offX + (p.x / sampleW) * targetW
         const y = offY + (p.y / sampleH) * targetH
 
@@ -196,10 +203,13 @@ export function PageLoader() {
           angle: Math.random() * Math.PI * 2,
           target: t,
           size: 1.1 + Math.random() * 1.3,
-          delay: Math.random() * 250,
-          // Most particles fade with the global timeline; ~15% linger longer
-          // and ~10% fade slightly early, mixing the dissolve naturally.
+          delay: Math.random() * 400,
+          // Most particles fade with the global timeline; some linger longer
+          // and some fade slightly early, mixing the dissolve naturally.
           life: 0.7 + Math.random() * 0.7,
+          swayAmp: 3 + Math.random() * 6,
+          swayFreq: 0.6 + Math.random() * 0.8,
+          swayPhase: Math.random() * Math.PI * 2,
         }
       })
 
@@ -214,11 +224,13 @@ export function PageLoader() {
       } catch {}
 
       const startTime = performance.now()
-      const DURATION = 1400
+      // Long duration + sine drift below = floating-leaves motion. Particles
+      // crawl outward slowly rather than firing off in a single pulse.
+      const DURATION = 2600
 
-      // easeOutCubic — particles ease into their target distance and slow to
-      // a stop instead of accelerating off-screen.
-      const easeOut = (k: number) => 1 - Math.pow(1 - k, 3)
+      // easeOutQuint — pronounced early ease so particles start almost still,
+      // then drift outward and settle softly toward their target distance.
+      const easeOut = (k: number) => 1 - Math.pow(1 - k, 5)
 
       const frame = (now: number) => {
         if (cancelled) return
@@ -233,10 +245,15 @@ export function PageLoader() {
 
           // Position is interpolated from spawn outward to target distance.
           // Every particle has a different target → the field is a filled
-          // disk that expands and softens with time.
+          // disk that expands and softens with time. A small perpendicular
+          // sine drift adds a leaf-like sway as the particle floats outward.
           const r = p.target * eased
-          p.x = p.startX + Math.cos(p.angle) * r
-          p.y = p.startY + Math.sin(p.angle) * r
+          const tSec = local / 1000
+          const sway = Math.sin(tSec * p.swayFreq + p.swayPhase) * p.swayAmp
+          p.x =
+            p.startX + Math.cos(p.angle) * r + Math.cos(p.angle + Math.PI / 2) * sway
+          p.y =
+            p.startY + Math.sin(p.angle) * r + Math.sin(p.angle + Math.PI / 2) * sway
 
           // Alpha: hold for the first ~45% of life, then taper to zero by
           // the end of the particle's life. The per-particle life multiplier
@@ -256,7 +273,7 @@ export function PageLoader() {
           ctx.fill()
         }
         ctx.globalAlpha = 1
-        if (elapsed < DURATION + 400) raf = requestAnimationFrame(frame)
+        if (elapsed < DURATION + 800) raf = requestAnimationFrame(frame)
       }
       raf = requestAnimationFrame(frame)
     }
@@ -285,7 +302,7 @@ export function PageLoader() {
         className="absolute inset-0 bg-background"
         style={{
           opacity: phase === "disperse" ? 0 : 1,
-          transition: "opacity 1500ms cubic-bezier(0.22, 1, 0.36, 1)",
+          transition: "opacity 2600ms cubic-bezier(0.22, 1, 0.36, 1)",
         }}
       />
 
