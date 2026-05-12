@@ -5,6 +5,7 @@ import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { ThemeProvider } from "@/components/theme-provider"
 import { BackgroundManager } from "@/components/background-manager"
+import { PageLoader } from "@/components/page-loader"
 import "./globals.css"
 
 const inter = Inter({
@@ -54,6 +55,7 @@ export default function RootLayout({
             <main className="min-h-[calc(100dvh-80px)]">{children}</main>
             <SiteFooter />
           </div>
+          <PageLoader />
           {process.env.NODE_ENV === "production" && <Analytics />}
         </ThemeProvider>
       </body>
