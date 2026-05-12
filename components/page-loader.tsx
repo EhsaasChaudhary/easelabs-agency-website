@@ -157,45 +157,49 @@ export function PageLoader() {
       const offX = (width - targetW) / 2
       const offY = (height - targetH) / 2
 
-      // Distance from each particle's spawn point to the farthest viewport
-      // corner — used to scale velocity so particles reach the page edges.
-      const centerX = width / 2
-      const centerY = height / 2
-      const maxReach = Math.hypot(width, height) / 2
+      // Bounded dispersal — particles spread within a soft radius around the
+      // wordmark, not across the entire viewport. The radius is sized to the
+      // wordmark itself so the effect feels anchored to the letters.
+      const MAX_RADIUS = Math.max(targetW, targetH) * 0.55
 
       type P = {
         x: number
         y: number
-        vx: number
-        vy: number
+        startX: number
+        startY: number
+        angle: number
+        // Per-particle target distance from spawn. Distributed with sqrt for
+        // uniform area density → fills the disk evenly instead of a ring.
+        target: number
         size: number
         delay: number
+        // Per-particle life multiplier. Values > 1 linger past the global
+        // duration; values < 1 fade earlier. Creates an organic, layered
+        // dissolve where some particles stay near the wordmark center.
+        life: number
       }
+
       const particles: P[] = pts.map((p) => {
         const x = offX + (p.x / sampleW) * targetW
         const y = offY + (p.y / sampleH) * targetH
 
-        // Bias the angle outward from screen center so particles tend to fly
-        // toward the page edges rather than back across themselves. Add some
-        // jitter so the motion doesn't feel radially perfect.
-        const dx = x - centerX
-        const dy = y - centerY
-        const baseAngle = Math.atan2(dy, dx) || Math.random() * Math.PI * 2
-        const angle = baseAngle + (Math.random() - 0.5) * 1.2
-
-        // Speeds scaled to the viewport so particles cover the full page in
-        // the available time. Range gives some particles edge-reaching speed
-        // and others a slower drift for a layered, organic spread.
-        const reach = maxReach * (0.5 + Math.random() * 0.9)
-        const speed = reach / 70 // ~70 frames worth of travel under accel
+        // Uniform-area distribution across a filled disk. sqrt(random()) gives
+        // each radius band equal particle density, so the spread looks like a
+        // filled expanding circle rather than a donut.
+        const t = Math.sqrt(Math.random()) * MAX_RADIUS
 
         return {
           x,
           y,
-          vx: Math.cos(angle) * speed,
-          vy: Math.sin(angle) * speed,
+          startX: x,
+          startY: y,
+          angle: Math.random() * Math.PI * 2,
+          target: t,
           size: 1.1 + Math.random() * 1.3,
-          delay: Math.random() * 220,
+          delay: Math.random() * 250,
+          // Most particles fade with the global timeline; ~15% linger longer
+          // and ~10% fade slightly early, mixing the dissolve naturally.
+          life: 0.7 + Math.random() * 0.7,
         }
       })
 
@@ -212,6 +216,10 @@ export function PageLoader() {
       const startTime = performance.now()
       const DURATION = 1400
 
+      // easeOutCubic — particles ease into their target distance and slow to
+      // a stop instead of accelerating off-screen.
+      const easeOut = (k: number) => 1 - Math.pow(1 - k, 3)
+
       const frame = (now: number) => {
         if (cancelled) return
         const elapsed = now - startTime
@@ -220,24 +228,35 @@ export function PageLoader() {
 
         for (const p of particles) {
           const local = Math.max(0, elapsed - p.delay)
-          const t = Math.min(local / DURATION, 1)
-          // Strong outward acceleration so particles fan out across the page.
-          p.x += p.vx
-          p.y += p.vy
-          p.vx *= 1.022
-          p.vy *= 1.022
-          // Hold opacity for ~60% of the life, then taper. Keeps the spread
-          // visually present while the background also fades, instead of
-          // ghosting out near the wordmark.
-          const alpha =
-            t < 0.6 ? 0.85 : 0.85 * Math.max(0, 1 - (t - 0.6) / 0.4)
+          const k = Math.min(local / DURATION, 1)
+          const eased = easeOut(k)
+
+          // Position is interpolated from spawn outward to target distance.
+          // Every particle has a different target → the field is a filled
+          // disk that expands and softens with time.
+          const r = p.target * eased
+          p.x = p.startX + Math.cos(p.angle) * r
+          p.y = p.startY + Math.sin(p.angle) * r
+
+          // Alpha: hold for the first ~45% of life, then taper to zero by
+          // the end of the particle's life. The per-particle life multiplier
+          // staggers the fade so some particles linger naturally.
+          const lifeK = Math.min(local / (DURATION * p.life), 1)
+          let alpha: number
+          if (lifeK < 0.45) {
+            alpha = 0.85
+          } else {
+            alpha = 0.85 * (1 - (lifeK - 0.45) / 0.55)
+          }
+          if (alpha <= 0) continue
+
           ctx.globalAlpha = alpha
           ctx.beginPath()
           ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2)
           ctx.fill()
         }
         ctx.globalAlpha = 1
-        if (elapsed < DURATION + 200) raf = requestAnimationFrame(frame)
+        if (elapsed < DURATION + 400) raf = requestAnimationFrame(frame)
       }
       raf = requestAnimationFrame(frame)
     }
