@@ -44,21 +44,30 @@ const team = [
 const timeline = [
   {
     year: "2023",
-    chapter: "01",
-    title: "A loft, a laptop, an idea.",
-    body: "EaseLabs starts in a co-working loft in Bengaluru — three friends, one rule: only take on work we'd be proud to ship.",
+    title: "Started.",
+    body: "Three friends, one co-working loft in Bengaluru.",
+    shape: "circle",
+    color: "bg-brand-coral/30",
+    offset: "lg:mt-0",
+    rotate: "-rotate-3",
   },
   {
     year: "2024",
-    chapter: "02",
-    title: "First products in the wild.",
-    body: "We ship our first batch of partner products — a fintech app, a CMS, an AI tool — and grow the team to nine across design and engineering.",
+    title: "Shipped.",
+    body: "First partner products go live. Team grows to nine.",
+    shape: "square",
+    color: "bg-brand-cyan/30",
+    offset: "lg:mt-20",
+    rotate: "rotate-2",
   },
   {
     year: "2026",
-    chapter: "03",
-    title: "Building for the long run.",
-    body: "Now: open-sourcing internal tools, picking partners over projects, and writing software the way we'd want it written a decade from now.",
+    title: "Now.",
+    body: "Open-sourcing tools and building for the long run.",
+    shape: "blob",
+    color: "bg-brand-yellow/50",
+    offset: "lg:mt-8",
+    rotate: "-rotate-2",
   },
 ]
 
@@ -195,52 +204,55 @@ export default function AboutPage() {
 
       {/* TIMELINE */}
       <section className="mx-auto max-w-7xl px-6 pb-24 lg:px-10">
-        <div className="grid gap-10 lg:grid-cols-12">
-          <div className="lg:col-span-5">
+        <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
+          <div className="max-w-xl">
             <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
               [ A short history ]
             </p>
             <h2 className="mt-3 font-serif text-5xl leading-tight tracking-tight md:text-6xl">
-              From a co-working loft <span className="italic text-brand-coral">to here</span>.
+              Three years, in <span className="italic text-brand-coral">three shapes</span>.
             </h2>
-            <p className="mt-6 max-w-md text-pretty leading-relaxed text-muted-foreground">
-              Three years, three chapters. We&apos;ve grown slowly and on purpose —
-              one good partner, one shipped product, one small bet at a time.
-            </p>
           </div>
+          <p className="max-w-xs text-pretty text-sm leading-relaxed text-muted-foreground">
+            We&apos;ve grown slowly and on purpose — one good partner, one shipped
+            product, one small bet at a time.
+          </p>
+        </div>
 
-          <ol className="lg:col-span-7">
-            {timeline.map((t, i) => (
+        <ol className="mt-16 grid gap-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
+          {timeline.map((t, i) => {
+            const shapeClass =
+              t.shape === "circle"
+                ? "rounded-full"
+                : t.shape === "square"
+                  ? "rounded-[2.5rem]"
+                  : "rounded-[42%_58%_60%_40%_/_45%_50%_50%_55%]"
+
+            return (
               <li
                 key={t.year}
-                className="group relative flex flex-col gap-4 border-t border-border py-10 first:border-t-0 first:pt-0 md:flex-row md:items-start md:gap-10"
+                className={`relative flex justify-center ${t.offset}`}
               >
-                <div className="flex shrink-0 items-baseline gap-3 md:w-40 md:flex-col md:items-start md:gap-1">
-                  <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
-                    Chapter {t.chapter}
+                <div
+                  className={`group relative aspect-square w-full max-w-[22rem] ${shapeClass} ${t.color} ${t.rotate} flex flex-col items-center justify-center p-10 text-center transition-transform duration-500 ease-out hover:rotate-0 hover:scale-[1.02]`}
+                >
+                  <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                    0{i + 1}
                   </span>
-                  <span className="font-serif text-5xl leading-none tracking-tight text-brand-coral md:text-6xl">
+                  <p className="mt-2 font-serif text-6xl leading-none tracking-tight md:text-7xl">
                     {t.year}
-                  </span>
-                </div>
-                <div className="flex-1">
-                  <h3 className="font-serif text-3xl leading-tight tracking-tight md:text-4xl">
+                  </p>
+                  <p className="mt-4 font-serif text-2xl leading-tight tracking-tight">
                     {t.title}
-                  </h3>
-                  <p className="mt-3 max-w-xl leading-relaxed text-muted-foreground">
+                  </p>
+                  <p className="mt-3 max-w-[18ch] text-sm leading-relaxed text-foreground/80">
                     {t.body}
                   </p>
-                  {i < timeline.length - 1 ? null : (
-                    <span className="mt-4 inline-flex items-center gap-2 rounded-full bg-brand-yellow/40 px-3 py-1 font-mono text-xs uppercase tracking-widest">
-                      <span className="h-1.5 w-1.5 rounded-full bg-foreground" />
-                      Where we are now
-                    </span>
-                  )}
                 </div>
               </li>
-            ))}
-          </ol>
-        </div>
+            )
+          })}
+        </ol>
 
         <div className="mt-16 flex flex-wrap items-center gap-3">
           <Link
