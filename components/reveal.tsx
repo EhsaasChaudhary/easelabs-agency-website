@@ -19,11 +19,7 @@ type RevealProps = {
   delay?: number
   /** If false, re-animates every time the element leaves and re-enters. */
   once?: boolean
-  /**
-   * 0–1, how much of the element must be visible to trigger.
-   * Defaults to 0 because we use `rootMargin` to define a fixed trigger line
-   * at 25% from the top of the viewport (see implementation below).
-   */
+  /** 0–1, how much of the element must be visible to trigger. */
   threshold?: number
   className?: string
   children: ReactNode
@@ -75,10 +71,9 @@ export function Reveal({
       return
     }
 
-    // Trigger when the element's top crosses 25% from the top of the
-    // viewport. We collapse the IO "root area" to just the top 25% strip by
-    // pulling the bottom edge up 75%, so an element only intersects once its
-    // top has scrolled into that strip.
+    // Trigger as soon as any pixel of the element enters the viewport — no
+    // delay, no scroll-threshold. Elements already in view on initial mount
+    // animate in immediately.
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -90,7 +85,7 @@ export function Reveal({
           }
         })
       },
-      { threshold, rootMargin: "0px 0px -75% 0px" }
+      { threshold, rootMargin: "0px" }
     )
     observer.observe(el)
     return () => observer.disconnect()
