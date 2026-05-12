@@ -17,10 +17,12 @@ type Phase = "wordmark" | "disperse" | "done"
  *
  *   PHASE 2 — disperse:
  *     The wordmark is sampled into a grid of points. Each point spawns a
- *     terracotta particle in-place which drifts outward in a random direction
- *     and fades, while the overlay background simultaneously fades out —
- *     creating the illusion that the wordmark scatters into the live
- *     interactive particle field running under the main page.
+ *     terracotta particle in-place. Particles drift outward with strong
+ *     acceleration so they spread across the FULL viewport, while a
+ *     decoupled background layer fades its opacity from 1 → 0 over the
+ *     full dispersal duration. The result: the wordmark visually shatters
+ *     into a field of particles that scatter into every corner of the page,
+ *     gracefully blending into the live interactive background underneath.
  *
  * Coordination:
  *   - Initial React state is "wordmark", so the loader is included in the
@@ -61,10 +63,10 @@ export function PageLoader() {
     const previousOverflow = document.body.style.overflow
     document.body.style.overflow = "hidden"
 
-    // Phase 1: wipe reveal (1100ms) + hold (500ms)
+    // Phase 1: wipe reveal (1100ms) + hold (600ms)
     const WORDMARK_DURATION = reducedMotion ? 500 : 1700
-    // Phase 2: disperse + overlay fade (1200ms)
-    const DISPERSE_DURATION = reducedMotion ? 0 : 1200
+    // Phase 2: disperse particles + overlay fade (1500ms)
+    const DISPERSE_DURATION = reducedMotion ? 0 : 1500
 
     const enterDisperse = window.setTimeout(() => {
       if (reducedMotion) {
@@ -155,6 +157,12 @@ export function PageLoader() {
       const offX = (width - targetW) / 2
       const offY = (height - targetH) / 2
 
+      // Distance from each particle's spawn point to the farthest viewport
+      // corner — used to scale velocity so particles reach the page edges.
+      const centerX = width / 2
+      const centerY = height / 2
+      const maxReach = Math.hypot(width, height) / 2
+
       type P = {
         x: number
         y: number
@@ -164,15 +172,30 @@ export function PageLoader() {
         delay: number
       }
       const particles: P[] = pts.map((p) => {
-        const angle = Math.random() * Math.PI * 2
-        const speed = 0.6 + Math.random() * 1.6
+        const x = offX + (p.x / sampleW) * targetW
+        const y = offY + (p.y / sampleH) * targetH
+
+        // Bias the angle outward from screen center so particles tend to fly
+        // toward the page edges rather than back across themselves. Add some
+        // jitter so the motion doesn't feel radially perfect.
+        const dx = x - centerX
+        const dy = y - centerY
+        const baseAngle = Math.atan2(dy, dx) || Math.random() * Math.PI * 2
+        const angle = baseAngle + (Math.random() - 0.5) * 1.2
+
+        // Speeds scaled to the viewport so particles cover the full page in
+        // the available time. Range gives some particles edge-reaching speed
+        // and others a slower drift for a layered, organic spread.
+        const reach = maxReach * (0.5 + Math.random() * 0.9)
+        const speed = reach / 70 // ~70 frames worth of travel under accel
+
         return {
-          x: offX + (p.x / sampleW) * targetW,
-          y: offY + (p.y / sampleH) * targetH,
+          x,
+          y,
           vx: Math.cos(angle) * speed,
           vy: Math.sin(angle) * speed,
           size: 1.1 + Math.random() * 1.3,
-          delay: Math.random() * 160,
+          delay: Math.random() * 220,
         }
       })
 
@@ -187,7 +210,7 @@ export function PageLoader() {
       } catch {}
 
       const startTime = performance.now()
-      const DURATION = 1100
+      const DURATION = 1400
 
       const frame = (now: number) => {
         if (cancelled) return
@@ -198,12 +221,16 @@ export function PageLoader() {
         for (const p of particles) {
           const local = Math.max(0, elapsed - p.delay)
           const t = Math.min(local / DURATION, 1)
-          // Drift outward, gently accelerating, then fade.
+          // Strong outward acceleration so particles fan out across the page.
           p.x += p.vx
           p.y += p.vy
-          p.vx *= 1.004
-          p.vy *= 1.004
-          const alpha = (1 - t) * 0.85
+          p.vx *= 1.022
+          p.vy *= 1.022
+          // Hold opacity for ~60% of the life, then taper. Keeps the spread
+          // visually present while the background also fades, instead of
+          // ghosting out near the wordmark.
+          const alpha =
+            t < 0.6 ? 0.85 : 0.85 * Math.max(0, 1 - (t - 0.6) / 0.4)
           ctx.globalAlpha = alpha
           ctx.beginPath()
           ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2)
@@ -229,23 +256,31 @@ export function PageLoader() {
       data-page-loader
       role="presentation"
       aria-hidden="true"
-      className="fixed inset-0 z-[100] flex items-center justify-center"
-      style={{
-        backgroundColor:
-          phase === "disperse" ? "rgba(0,0,0,0)" : "var(--background)",
-        transition:
-          phase === "disperse"
-            ? "background-color 1000ms ease-out"
-            : undefined,
-      }}
+      className="pointer-events-none fixed inset-0 z-[100] flex items-center justify-center"
     >
-      {reduced ? (
-        <h1 className="font-serif text-6xl tracking-tight md:text-8xl">
-          EaseLabs
-        </h1>
-      ) : phase === "wordmark" ? (
-        <WordmarkContent />
-      ) : (
+      {/* Decoupled background layer — opacity fades smoothly from 1 → 0 as
+          the particles disperse, so the cream surface dissolves in concert
+          with the wordmark scattering rather than blinking off. */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 bg-background"
+        style={{
+          opacity: phase === "disperse" ? 0 : 1,
+          transition: "opacity 1500ms cubic-bezier(0.22, 1, 0.36, 1)",
+        }}
+      />
+
+      <div className="relative">
+        {reduced ? (
+          <h1 className="font-serif text-6xl tracking-tight md:text-8xl">
+            EaseLabs
+          </h1>
+        ) : phase === "wordmark" ? (
+          <WordmarkContent />
+        ) : null}
+      </div>
+
+      {phase === "disperse" && (
         <canvas
           ref={canvasRef}
           aria-hidden="true"
