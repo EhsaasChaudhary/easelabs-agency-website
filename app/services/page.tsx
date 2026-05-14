@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { ArrowUpRight, Compass, Code2, Palette, Bot, Boxes, Rocket } from "lucide-react"
+import { Reveal } from "@/components/reveal"
 
 export const metadata = {
   title: "Services — EaseLabs",
@@ -157,32 +158,48 @@ export default function ServicesPage() {
     <>
       {/* HERO */}
       <section className="mx-auto max-w-7xl px-6 pt-16 pb-16 lg:px-10 lg:pt-24">
-        <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
+        <Reveal as="p" variant="up" className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
           [ Services ]
-        </p>
-        <h1 className="mt-6 font-serif text-6xl leading-[0.95] tracking-tight md:text-8xl lg:text-9xl">
+        </Reveal>
+        <Reveal
+          as="h1"
+          variant="up"
+          delay={120}
+          className="mt-6 font-serif text-6xl leading-[0.95] tracking-tight md:text-8xl lg:text-9xl"
+        >
           The full creative-software <span className="italic text-brand-coral">loop</span>.
-        </h1>
-        <p className="mt-8 max-w-2xl text-pretty text-lg leading-relaxed text-muted-foreground">
+        </Reveal>
+        <Reveal
+          as="p"
+          variant="up"
+          delay={240}
+          className="mt-8 max-w-2xl text-pretty text-lg leading-relaxed text-muted-foreground"
+        >
           We&apos;re a one-stop studio: strategy, design, engineering, and brand,
           held together by a small team that&apos;s spent years working this way.
           Pick a slice — or hand us the whole loop.
-        </p>
+        </Reveal>
       </section>
 
       {/* SERVICES GRID */}
       <section className="mx-auto max-w-7xl px-6 pb-24 lg:px-10">
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {services.map(({ icon: Icon, ...s }) => (
-            <article
+          {services.map(({ icon: Icon, ...s }, i) => (
+            <Reveal
+              as="article"
               key={s.n}
-              className={`group relative flex flex-col gap-6 overflow-hidden rounded-3xl ${s.color} ${s.fg} p-8 transition-transform hover:-translate-y-1`}
+              variant="up"
+              delay={(i % 3) * 100 + Math.floor(i / 3) * 60}
+              className={`group relative flex flex-col gap-6 overflow-hidden rounded-3xl ${s.color} ${s.fg} p-8 hover-lift`}
             >
               <div className="flex items-start justify-between">
                 <span className="font-mono text-xs uppercase tracking-widest opacity-70">
                   {s.n}
                 </span>
-                <Icon className="h-6 w-6" aria-hidden="true" />
+                <Icon
+                  className="h-6 w-6 transition-transform duration-500 group-hover:rotate-12"
+                  aria-hidden="true"
+                />
               </div>
               <h2 className="font-serif text-3xl leading-tight tracking-tight">{s.title}</h2>
               <p className="text-sm leading-relaxed opacity-90">{s.summary}</p>
@@ -194,7 +211,7 @@ export default function ServicesPage() {
                   </li>
                 ))}
               </ul>
-            </article>
+            </Reveal>
           ))}
         </div>
       </section>
@@ -202,7 +219,7 @@ export default function ServicesPage() {
       {/* PROCESS */}
       <section className="mx-auto max-w-7xl px-6 pb-24 lg:px-10">
         <div className="grid gap-10 lg:grid-cols-12">
-          <div className="lg:col-span-4">
+          <Reveal variant="up" className="lg:col-span-4">
             <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
               [ How an engagement runs ]
             </p>
@@ -213,12 +230,15 @@ export default function ServicesPage() {
               Every Friday you see new work. Every Monday we plan the next loop.
               No surprises, no theatre, no big reveals at the end.
             </p>
-          </div>
+          </Reveal>
           <ol className="lg:col-span-8">
             {process.map((p, i) => (
-              <li
+              <Reveal
+                as="li"
                 key={p.title}
-                className="grid grid-cols-12 items-baseline gap-4 border-t border-border py-6 last:border-b"
+                variant="left"
+                delay={i * 100}
+                className="grid grid-cols-12 items-baseline gap-4 border-t border-border py-6 last:border-b transition-colors hover:bg-secondary/40"
               >
                 <span className="col-span-3 font-mono text-xs uppercase tracking-widest text-brand-coral md:col-span-2">
                   {p.n}
@@ -234,7 +254,7 @@ export default function ServicesPage() {
                 <span aria-hidden className="hidden font-mono text-xs text-muted-foreground md:col-span-1 md:inline">
                   0{i + 1}
                 </span>
-              </li>
+              </Reveal>
             ))}
           </ol>
         </div>
@@ -242,18 +262,23 @@ export default function ServicesPage() {
 
       {/* ENGAGEMENTS */}
       <section className="mx-auto max-w-7xl px-6 pb-24 lg:px-10">
-        <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
-          [ Ways to work together ]
-        </p>
-        <h2 className="mt-3 font-serif text-5xl leading-tight tracking-tight md:text-6xl">
-          Pick the <span className="italic">shape</span> that fits.
-        </h2>
+        <Reveal variant="up">
+          <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
+            [ Ways to work together ]
+          </p>
+          <h2 className="mt-3 font-serif text-5xl leading-tight tracking-tight md:text-6xl">
+            Pick the <span className="italic">shape</span> that fits.
+          </h2>
+        </Reveal>
 
         <div className="mt-12 grid gap-6 lg:grid-cols-3">
-          {engagements.map((e) => (
-            <article
+          {engagements.map((e, i) => (
+            <Reveal
+              as="article"
               key={e.title}
-              className={`relative flex flex-col gap-6 overflow-hidden rounded-3xl ${e.color} ${e.fg ?? ""} p-8`}
+              variant="up"
+              delay={i * 120}
+              className={`relative flex flex-col gap-6 overflow-hidden rounded-3xl ${e.color} ${e.fg ?? ""} p-8 hover-lift`}
             >
               {e.featured && (
                 <span className="absolute right-6 top-6 rounded-full bg-background px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-foreground">
@@ -277,16 +302,16 @@ export default function ServicesPage() {
               </ul>
               <Link
                 href="/contact"
-                className={`mt-2 inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm transition-colors ${
+                className={`group mt-2 inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm transition-colors ${
                   e.featured
                     ? "bg-background text-foreground hover:bg-background/90"
                     : "bg-foreground text-background hover:bg-brand-coral"
                 }`}
               >
                 Start a {e.title.toLowerCase()}
-                <ArrowUpRight className="h-4 w-4" />
+                <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
               </Link>
-            </article>
+            </Reveal>
           ))}
         </div>
       </section>
@@ -294,14 +319,14 @@ export default function ServicesPage() {
       {/* FAQ */}
       <section className="mx-auto max-w-7xl px-6 pb-24 lg:px-10">
         <div className="grid gap-10 lg:grid-cols-12">
-          <div className="lg:col-span-4">
+          <Reveal variant="up" className="lg:col-span-4">
             <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
               [ FAQ ]
             </p>
             <h2 className="mt-3 font-serif text-5xl leading-tight tracking-tight md:text-6xl">
               Quick answers.
             </h2>
-          </div>
+          </Reveal>
           <dl className="divide-y divide-border border-y border-border lg:col-span-8">
             {[
               {
@@ -320,13 +345,18 @@ export default function ServicesPage() {
                 q: "How fast can we start?",
                 a: "Usually within 2–3 weeks. For tighter timelines, drop us a line and we'll see what's possible.",
               },
-            ].map((f) => (
-              <div key={f.q} className="grid grid-cols-12 gap-4 py-6">
+            ].map((f, i) => (
+              <Reveal
+                key={f.q}
+                variant="up"
+                delay={i * 80}
+                className="grid grid-cols-12 gap-4 py-6 transition-colors hover:bg-secondary/40"
+              >
                 <dt className="col-span-12 font-serif text-2xl leading-tight tracking-tight md:col-span-5">
                   {f.q}
                 </dt>
                 <dd className="col-span-12 text-muted-foreground md:col-span-7">{f.a}</dd>
-              </div>
+              </Reveal>
             ))}
           </dl>
         </div>

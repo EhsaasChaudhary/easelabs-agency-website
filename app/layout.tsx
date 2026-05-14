@@ -4,6 +4,8 @@ import { Analytics } from "@vercel/analytics/next"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { ThemeProvider } from "@/components/theme-provider"
+import { BackgroundManager } from "@/components/background-manager"
+import { PageLoader } from "@/components/page-loader"
 import "./globals.css"
 
 const inter = Inter({
@@ -45,11 +47,24 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${inter.variable} ${instrumentSerif.variable} ${jetbrainsMono.variable} bg-background`}
     >
+      <head>
+        {/* Blocking script: on already-seen sessions, hide the loader markup
+            instantly to prevent a flash before React hydrates. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{var p=new URLSearchParams(location.search).get('loader');if(p!=='show'&&p!=='1'&&sessionStorage.getItem('easelabs_loader_seen')==='1'){document.documentElement.classList.add('loader-skip');}}catch(e){}`,
+          }}
+        />
+      </head>
       <body className="font-sans antialiased text-foreground">
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
-          <SiteHeader />
-          <main className="min-h-[calc(100dvh-80px)]">{children}</main>
-          <SiteFooter />
+          <BackgroundManager />
+          <div className="relative z-10">
+            <SiteHeader />
+            <main className="min-h-[calc(100dvh-80px)]">{children}</main>
+            <SiteFooter />
+          </div>
+          <PageLoader />
           {process.env.NODE_ENV === "production" && <Analytics />}
         </ThemeProvider>
       </body>
