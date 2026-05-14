@@ -179,3 +179,140 @@
     animation: none;
   }
 }
+
+/* When the inline head script detects an already-seen session, this class
+   instantly removes the SSR-rendered loader before paint to avoid a flash. */
+html.loader-skip [data-page-loader] {
+  display: none !important;
+}
+
+/* ----------------------------------------------------------------------------
+ * Scroll-reveal fallback
+ * ---------------------------------------------------------------------------
+ * If JavaScript is disabled (crawlers, no-JS users), the IntersectionObserver
+ * never runs — so the Reveal component's elements would stay invisible. Force
+ * them visible at rest in that case.
+ * -------------------------------------------------------------------------- */
+@media (scripting: none) {
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* ----------------------------------------------------------------------------
+ * Hover utilities
+ * ---------------------------------------------------------------------------
+ * Lightweight, consistent hover transitions used across pages. Tailwind's
+ * built-in `hover:` utilities cover most cases; these classes wrap common
+ * compound effects so the page markup stays clean.
+ * -------------------------------------------------------------------------- */
+@layer utilities {
+  /* Soft lift for cards. */
+  .hover-lift {
+    transition: transform 350ms cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 350ms ease-out;
+  }
+  .hover-lift:hover {
+    transform: translateY(-4px);
+  }
+
+  /* Slight tilt + lift for playful cards (e.g. team avatars). */
+  .hover-tilt {
+    transition: transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .hover-tilt:hover {
+    transform: rotate(-1.2deg) translateY(-3px);
+  }
+
+  /* Zoom the direct child <img> inside on hover (works for figure/anchor). */
+  .hover-zoom img {
+    transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .hover-zoom:hover img,
+  .group:hover .hover-zoom img {
+    transform: scale(1.06);
+  }
+
+  /* Animated underline that grows in from the left. */
+  .hover-underline {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size 400ms cubic-bezier(0.22, 1, 0.36, 1),
+      color 200ms ease-out;
+  }
+  .hover-underline:hover {
+    background-size: 100% 1px;
+  }
+
+  /* Text-color shift to the brand accent on hover. */
+  .hover-coral {
+    transition: color 200ms ease-out;
+  }
+  .hover-coral:hover {
+    color: var(--brand-coral);
+  }
+}
+
+/* ----------------------------------------------------------------------------
+ * Card surface guard
+ * ---------------------------------------------------------------------------
+ * The interactive background canvas sits fixed behind all content. Any element
+ * using a translucent brand or surface tint would otherwise let the particles
+ * show through AND would visually collapse into the page background. We paint
+ * an opaque backdrop behind those elements that is pre-tinted with the card's
+ * own brand color, so cards keep their original color identity AND fully block
+ * the canvas regardless of theme.
+ * -------------------------------------------------------------------------- */
+@layer utilities {
+  /* Scoped to <main> only so the sticky header (and any other intentionally
+     translucent UI outside content) keeps its backdrop-blur look. */
+  main [class*="bg-brand-coral/"],
+  main [class*="bg-brand-cyan/"],
+  main [class*="bg-brand-yellow/"],
+  main [class*="bg-foreground/"],
+  main [class*="bg-card/"],
+  main [class*="bg-secondary/"],
+  main [class*="bg-muted/"] {
+    position: relative;
+    isolation: isolate;
+  }
+
+  main [class*="bg-brand-coral/"]::before,
+  main [class*="bg-brand-cyan/"]::before,
+  main [class*="bg-brand-yellow/"]::before,
+  main [class*="bg-foreground/"]::before,
+  main [class*="bg-card/"]::before,
+  main [class*="bg-secondary/"]::before,
+  main [class*="bg-muted/"]::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  /* Brand-tinted cards: backdrop pre-mixed with the brand color so the card
+     reads as its intended hue rather than blending with the body background. */
+  main [class*="bg-brand-coral/"]::before {
+    background-color: color-mix(in oklch, var(--brand-coral) 28%, var(--background));
+  }
+  main [class*="bg-brand-cyan/"]::before {
+    background-color: color-mix(in oklch, var(--brand-cyan) 28%, var(--background));
+  }
+  main [class*="bg-brand-yellow/"]::before {
+    background-color: color-mix(in oklch, var(--brand-yellow) 32%, var(--background));
+  }
+
+  /* Neutral surfaces: use the slightly-elevated card token so they sit just
+     above the page background. */
+  main [class*="bg-foreground/"]::before,
+  main [class*="bg-card/"]::before,
+  main [class*="bg-secondary/"]::before,
+  main [class*="bg-muted/"]::before {
+    background-color: var(--card);
+  }
+}

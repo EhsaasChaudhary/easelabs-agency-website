@@ -3,7 +3,7 @@ import { ArrowUpRight } from "lucide-react"
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-border/60 bg-background">
+    <footer className="border-t border-border/60">
       {/* Big wordmark */}
       <div className="mx-auto max-w-7xl px-6 pt-20 pb-10 lg:px-10">
         <div className="flex flex-col gap-12 lg:flex-row lg:items-end lg:justify-between">
@@ -32,6 +32,7 @@ export function SiteFooter() {
                 <li><Link href="/about" className="hover:text-brand-coral">About</Link></li>
                 <li><Link href="/services" className="hover:text-brand-coral">Services</Link></li>
                 <li><Link href="/projects" className="hover:text-brand-coral">Projects</Link></li>
+                <li><Link href="/referral" className="hover:text-brand-coral">Referral</Link></li>
                 <li><Link href="/contact" className="hover:text-brand-coral">Contact</Link></li>
               </ul>
             </div>
